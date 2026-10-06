@@ -1,15 +1,18 @@
 "use client";
 
+import { createLead, type Lead} from "@/services/leads.service";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ContactoPage() {
-  const [formData, setFormData] = useState({
-    nombre: "",
-    correo: "",
-    celular: "",
-    comentario: "",
-  });
-  const [enviado, setEnviado] = useState(false);
+const router = useRouter();
+const [error, setError] = useState<string | null>(null);
+const [formData, setFormData] = useState<Lead>({
+    fullname: "",
+    email: "",
+    cellphone: "",
+    comment: ""
+  });  const [enviado] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -20,12 +23,21 @@ export default function ContactoPage() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Formulario de contacto enviado:", formData);
-    setEnviado(true);
-    setFormData({ nombre: "", correo: "", celular: "", comentario: "" });
-    setTimeout(() => setEnviado(false), 5000);
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevenir recarga de página
+
+    try {
+      // TypeScript valida que formData cumpla con CreateLeadInput
+      const nuevoLead = await createLead(formData);
+      
+      console.log("Lead creado exitosamente:", nuevoLead);
+      router.push("/admin/leads"); // Redirigir a la lista
+      router.refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Ocurrió un error inesperado"
+      );
+    }
   };
 
   return (
@@ -44,17 +56,17 @@ export default function ContactoPage() {
       >
         <div>
           <label
-            htmlFor="nombre"
+            htmlFor="fullname"
             className="block text-sm font-medium text-azabache"
           >
             Nombre
           </label>
           <input
             type="text"
-            id="nombre"
-            name="nombre"
+            id="fullname"
+            name="fullname"
             required
-            value={formData.nombre}
+            value={formData.fullname}
             onChange={handleChange}
             className="mt-2 block w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-azabache shadow-sm transition focus:border-latte focus:outline-none focus:ring-2 focus:ring-latte/30"
             placeholder="Tu nombre completo"
@@ -62,17 +74,17 @@ export default function ContactoPage() {
         </div>
         <div>
           <label
-            htmlFor="correo"
+            htmlFor="email"
             className="block text-sm font-medium text-azabache"
           >
             Correo electrónico
           </label>
           <input
             type="email"
-            id="correo"
-            name="correo"
+            id="email"
+            name="email"
             required
-            value={formData.correo}
+            value={formData.email}
             onChange={handleChange}
             className="mt-2 block w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-azabache shadow-sm transition focus:border-latte focus:outline-none focus:ring-2 focus:ring-latte/30"
             placeholder="tu@email.com"
@@ -80,17 +92,17 @@ export default function ContactoPage() {
         </div>
         <div>
           <label
-            htmlFor="celular"
+            htmlFor="cellphone"
             className="block text-sm font-medium text-azabache"
           >
             Celular
           </label>
           <input
             type="tel"
-            id="celular"
-            name="celular"
+            id="cellphone"
+            name="cellphone"
             required
-            value={formData.celular}
+            value={formData.cellphone}
             onChange={handleChange}
             className="mt-2 block w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-azabache shadow-sm transition focus:border-latte focus:outline-none focus:ring-2 focus:ring-latte/30"
             placeholder="618 000 0000"
@@ -98,17 +110,17 @@ export default function ContactoPage() {
         </div>
         <div>
           <label
-            htmlFor="comentario"
+            htmlFor="comment"
             className="block text-sm font-medium text-azabache"
           >
             Comentario
           </label>
           <textarea
-            id="comentario"
-            name="comentario"
+            id="comment"
+            name="comment"
             required
             rows={5}
-            value={formData.comentario}
+            value={formData.comment}
             onChange={handleChange}
             className="mt-2 block w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm text-azabache shadow-sm transition focus:border-latte focus:outline-none focus:ring-2 focus:ring-latte/30"
             placeholder="Escríbenos tu mensaje..."
@@ -125,6 +137,14 @@ export default function ContactoPage() {
         >
           Enviar mensaje
         </button>
+         {error ? (
+            <p
+              role="alert"
+              className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600"
+            >
+              {error}
+            </p>
+          ) : null}
       </form>
     </div>
   );

@@ -1,18 +1,24 @@
-import { LEAD_STATUS_LABELS } from "../../lib/admin/types";
-import type { LeadStatus } from "../../lib/admin/types";
+"use client";
 
-export default function StatusBadge({ status }: { status: LeadStatus }) {
-  const esAtendido = status === "atendido";
+import type { LeadStatus } from "@/services/leads.service";
+
+interface StatusBadgeProps {
+  status: LeadStatus;
+}
+
+export default function StatusBadge({ status }: StatusBadgeProps) {
+  // Verificamos tolerando mayúsculas o minúsculas
+  const isPendiente = status === "PENDIENTE" || (status as string) === "pendiente";
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-        esAtendido
-          ? "bg-latte/15 text-latte"
-          : "bg-azabache/10 text-azabache"
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+        isPendiente
+          ? "bg-yellow-100 text-yellow-800"
+          : "bg-green-100 text-green-800"
       }`}
     >
-      {LEAD_STATUS_LABELS[status]}
+      {isPendiente ? "Pendiente" : "Atendido"}
     </span>
   );
 }

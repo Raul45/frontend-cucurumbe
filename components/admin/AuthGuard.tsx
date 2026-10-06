@@ -1,36 +1,38 @@
 "use client";
 
+import { getCurrentUser } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
-import { useEffect, useSyncExternalStore } from "react";
-import { leerSesion } from "../../lib/admin/auth";
+import { useEffect, useState } from "react";
 
-/**
- * El guard vive solo en el cliente: sessionStorage no existe en el servidor.
- * `useSyncExternalStore` con snapshot de servidor `false` hace que el HTML
- * generado sea siempre el estado de carga y React aplique el valor real del
- * navegador al hidratar, sin setState en efecto ni desajuste de hidratación.
- */
-const suscribir = () => () => {};
-
-const haySesionEnServidor = () => false;
-const haySesionEnNavegador = () => leerSesion() !== null;
-
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
+export default function AuthGuard({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
-  const autenticado = useSyncExternalStore(
-    suscribir,
-    haySesionEnNavegador,
-    haySesionEnServidor,
-  );
+  const [loading, setLoading] = useState(true);
+  const [autenticado, setAutenticado] = useState(false);
 
   useEffect(() => {
-    // Se lee la sesión directamente (y no `autenticado`) porque en el primer
-    // render tras una carga completa `autenticado` todavía es el snapshot de
-    // servidor; el valor real llega en un render posterior.
-    if (!leerSesion()) router.replace("/admin-panel/login");
+    async function checkSession() {
+      try {
+        const data = await getCurrentUser();
+        console.log(data);
+        setAutenticado(true);
+      } catch {
+        console.log('no cookie');
+        setAutenticado(false);
+        router.replace("/admin/login");
+      } finally {
+        console.log('no cookie finally');
+        setLoading(false);
+      }
+    }
+
+    checkSession();
   }, [router]);
 
-  if (!autenticado) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="flex items-center gap-3 text-sm text-gris-pizarra">
@@ -39,6 +41,10 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     );
+  }
+
+  if (!autenticado) {
+    return null;
   }
 
   return <>{children}</>;

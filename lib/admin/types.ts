@@ -34,6 +34,6 @@ export type VentaMes = { mes: string; ventas: number; pedidos: number };
 export type VentaCategoria = { categoria: string; ventas: number };
 
 export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
-  pendiente: "Pendiente",
-  atendido: "Atendido",
+  pendiente: "PENDIENTE",
+  atendido: "ATENDIDO",
 };

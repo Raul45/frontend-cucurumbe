@@ -1,28 +1,69 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { useAdminData } from "./AdminDataProvider";
-import DeleteButton from "./DeleteButton";
+import { useEffect, useMemo, useState } from "react";
 import PageHeader from "./PageHeader";
 import StatusBadge from "./StatusBadge";
 import Table from "./Table";
 import type { Columna } from "./Table";
 import { EditIcon } from "./icons";
-import { formatFecha } from "../../lib/admin/format";
-import { LEAD_STATUS_LABELS } from "../../lib/admin/types";
-import type { Lead, LeadStatus } from "../../lib/admin/types";
+import {
+  getLeads,
+  updateLeadStatus,
+  type Lead,
+  type LeadStatus,
+} from "@/services/leads.service";
+
+// Etiquetas legibles para la interfaz basadas directamente en LeadStatus
+const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
+  PENDIENTE: "PENDIENTE",
+  ATENDIDO: "ATENDIDO",
+};
 
 const FILTROS: { value: LeadStatus | "todos"; label: string }[] = [
   { value: "todos", label: "Todos" },
-  { value: "pendiente", label: LEAD_STATUS_LABELS.pendiente },
-  { value: "atendido", label: LEAD_STATUS_LABELS.atendido },
+  { value: "PENDIENTE", label: LEAD_STATUS_LABELS.PENDIENTE },
+  { value: "ATENDIDO", label: LEAD_STATUS_LABELS.ATENDIDO },
 ];
 
 export default function LeadsView() {
-  const { leads, actualizarLeadStatus, eliminarLead } = useAdminData();
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [filtro, setFiltro] = useState<LeadStatus | "todos">("todos");
   const [busqueda, setBusqueda] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function cargarLeads() {
+      try {
+        const data = await getLeads();
+        setLeads(data);
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "No se pudieron cargar los leads",
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    cargarLeads();
+  }, []);
+
+  const actualizarEstado = async (id: string, nuevoEstado: LeadStatus) => {
+    try {
+      await updateLeadStatus(id, {status: nuevoEstado});
+      setLeads((prev) =>
+        prev.map((lead) =>
+          lead._id === id ? { ...lead, status: nuevoEstado } : lead,
+        ),
+      );
+    } catch (err) {
+      console.error("Error al actualizar estado del lead:", err);
+    }
+  };
 
   const filtrados = useMemo(() => {
     const term = busqueda.trim().toLowerCase();
@@ -30,13 +71,16 @@ export default function LeadsView() {
       .filter((lead) => filtro === "todos" || lead.status === filtro)
       .filter((lead) => {
         if (term.length === 0) return true;
-        return [lead.nombre, lead.correo, lead.celular, lead.comentario].some((campo) =>
-          campo.toLowerCase().includes(term),
-        );
+        return [
+          lead.fullname,
+          lead.email,
+          lead.cellphone,
+          lead.comment,
+        ].some((campo) => campo?.toLowerCase().includes(term));
       });
   }, [leads, filtro, busqueda]);
 
-  const pendientes = leads.filter((lead) => lead.status === "pendiente").length;
+  const pendientes = leads.filter((lead) => lead.status === "PENDIENTE").length;
 
   const columnas: Columna<Lead>[] = [
     {
@@ -44,32 +88,33 @@ export default function LeadsView() {
       titulo: "Contacto",
       render: (lead) => (
         <div>
-          <p className="font-medium text-azabache">{lead.nombre}</p>
-          <p className="text-xs text-gris-pizarra">{lead.correo}</p>
+          <p className="font-medium text-azabache">{lead.fullname}</p>
+          <p className="text-xs text-gris-pizarra">{lead.email}</p>
         </div>
       ),
     },
-    { clave: "celular", titulo: "Celular", render: (lead) => lead.celular },
+    { clave: "celular", titulo: "Celular", render: (lead) => lead.cellphone },
     {
       clave: "comentario",
       titulo: "Comentario",
       render: (lead) => (
-        <p className="max-w-sm text-gris-pizarra">{lead.comentario}</p>
+        <p className="max-w-sm text-gris-pizarra">{lead.comment}</p>
       ),
     },
-    { clave: "fecha", titulo: "Fecha", render: (lead) => formatFecha(lead.fecha) },
     {
       clave: "status",
       titulo: "Estado",
       render: (lead) => (
         <div className="space-y-2">
-          <StatusBadge status={lead.status} />
+          <StatusBadge status={lead.status ?? "PENDIENTE"} />
           <select
             value={lead.status}
-            aria-label={`Cambiar estado de ${lead.nombre}`}
-            onChange={(event) =>
-              actualizarLeadStatus(lead.id, event.target.value as LeadStatus)
-            }
+            aria-label={`Cambiar estado de ${lead.fullname}`}
+            onChange={(event) => {
+              if (lead._id) {
+                actualizarEstado(lead._id, event.target.value as LeadStatus);
+              }
+            }}
             className="w-full rounded-lg border border-black/10 bg-white px-2 py-1 text-xs outline-none transition focus:border-latte focus:ring-2 focus:ring-latte/30"
           >
             {FILTROS.slice(1).map((opcion) => (
@@ -81,29 +126,30 @@ export default function LeadsView() {
         </div>
       ),
     },
-    {
-      clave: "acciones",
-      titulo: "Acciones",
-      className: "text-right",
-      render: (lead) => (
-        <div className="flex items-center justify-end gap-2">
-          <Link
-            href={`/admin-panel/leads/${lead.id}/editar`}
-            title={`Ver ${lead.nombre}`}
-            aria-label={`Ver ${lead.nombre}`}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 text-gris-pizarra transition hover:border-latte hover:text-latte"
-          >
-            <EditIcon />
-          </Link>
-          <DeleteButton
-            onDelete={() => eliminarLead(lead.id)}
-            etiqueta={lead.nombre}
-            confirmacion={`¿Eliminar el lead de “${lead.nombre}”?`}
-          />
-        </div>
-      ),
-    },
+
   ];
+
+  if (loading) {
+    return (
+      <div>
+        <PageHeader titulo="Leads" descripcion="Cargando leads..." />
+        <div className="rounded-xl border border-black/10 bg-white p-6 text-sm text-gris-pizarra">
+          Cargando leads...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <PageHeader titulo="Leads" descripcion="Error al cargar la información" />
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-600">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -143,7 +189,7 @@ export default function LeadsView() {
       <Table
         columnas={columnas}
         filas={filtrados}
-        claveFila={(lead) => lead.id}
+        claveFila={(lead) => lead._id ?? Math.random().toString()}
         mensajeVacio="No hay leads que coincidan con el filtro."
       />
     </div>

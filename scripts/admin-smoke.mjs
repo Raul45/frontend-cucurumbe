@@ -192,10 +192,10 @@ await goto(`${BASE}/`);
 check("home pública con navbar", (await hrefs()).includes("/productos"));
 
 // ---------------------------------------------------------------- guard
-await goto(`${BASE}/admin-panel/dashboard`);
-await waitForPath("/admin-panel/login");
+await goto(`${BASE}/admin/dashboard`);
+await waitForPath("/admin/login");
 await waitFor('input[name="usuario"]');
-check("guard redirige a login", (await urlActual()) === "/admin-panel/login", await urlActual());
+check("guard redirige a login", (await urlActual()) === "/admin/login", await urlActual());
 
 // ---------------------------------------------------------------- login
 await fill('input[name="usuario"]', "admin");
@@ -209,9 +209,9 @@ check(
 
 await fill('input[name="password"]', "cucurumbe");
 await submit();
-await waitForPath("/admin-panel/dashboard");
+await waitForPath("/admin/dashboard");
 await sleep(600);
-check("login entra al dashboard", (await urlActual()) === "/admin-panel/dashboard", await urlActual());
+check("login entra al dashboard", (await urlActual()) === "/admin/dashboard", await urlActual());
 
 // ---------------------------------------------------------------- dashboard
 await waitFor(".recharts-surface");
@@ -226,7 +226,7 @@ const surfaces = await evaluate("document.querySelectorAll('.recharts-surface').
 check("dashboard: gráficas recharts", surfaces >= 3, `surfaces=${surfaces}`);
 
 // ---------------------------------------------------------------- productos
-await goto(`${BASE}/admin-panel/productos`);
+await goto(`${BASE}/admin/productos`);
 await waitFor('input[type="search"]');
 await waitFor("tbody tr");
 check("productos: 8 filas", (await filas()) === 8, `filas=${await filas()}`);
@@ -238,15 +238,15 @@ check("productos: filtro de búsqueda", (await filas()) === 1, `filas=${await fi
 await fill('input[type="search"]', "");
 await sleep(300);
 
-await goto(`${BASE}/admin-panel/productos/nuevo`);
+await goto(`${BASE}/admin/productos/nuevo`);
 await waitFor('input[name="nombre"]');
 await fill('input[name="nombre"]', "Blend Nocturno");
 await fill('input[name="precio"]', "299");
 await fill('input[name="stock"]', "12");
 await submit();
-await waitForPath("/admin-panel/productos");
+await waitForPath("/admin/productos");
 await waitFor("tbody tr");
-check("productos: crear", (await urlActual()) === "/admin-panel/productos", await urlActual());
+check("productos: crear", (await urlActual()) === "/admin/productos", await urlActual());
 check("productos: nuevo en la tabla", (await texto()).includes("Blend Nocturno"));
 check(
   "productos: persistido en localStorage",
@@ -255,7 +255,7 @@ check(
   ),
 );
 
-await goto(`${BASE}/admin-panel/productos/prd-001/editar`);
+await goto(`${BASE}/admin/productos/prd-001/editar`);
 await waitFor('input[name="nombre"]');
 const nombrePrecargado = await evaluate(
   `document.querySelector('input[name="nombre"]').value`,
@@ -268,34 +268,34 @@ check(
 await fill('input[name="nombre"]', "Café Tostado Claro (editado)");
 await fill('input[name="stock"]', "99");
 await submit();
-await waitForPath("/admin-panel/productos");
+await waitForPath("/admin/productos");
 await waitFor("tbody tr");
 check("productos: editar", (await texto()).includes("Café Tostado Claro (editado)"));
 
 // ---------------------------------------------------------------- sucursales
-await goto(`${BASE}/admin-panel/sucursales`);
+await goto(`${BASE}/admin/sucursales`);
 await waitFor("tbody tr");
 check("sucursales: 3 filas", (await filas()) === 3, `filas=${await filas()}`);
 
-await goto(`${BASE}/admin-panel/sucursales/nueva`);
+await goto(`${BASE}/admin/sucursales/nueva`);
 await waitFor('input[name="nombre"]');
 await fill('input[name="nombre"]', "Sucursal Test");
 await fill('input[name="direccion"]', "Calle Test 1");
 await submit();
-await waitForPath("/admin-panel/sucursales");
+await waitForPath("/admin/sucursales");
 await waitFor("tbody tr");
 check("sucursales: crear", (await texto()).includes("Sucursal Test"));
 
-await goto(`${BASE}/admin-panel/sucursales/suc-002/editar`);
+await goto(`${BASE}/admin/sucursales/suc-002/editar`);
 await waitFor('input[name="nombre"]');
 await fill('input[name="telefono"]', "618 000 1111");
 await submit();
-await waitForPath("/admin-panel/sucursales");
+await waitForPath("/admin/sucursales");
 await waitFor("tbody tr");
 check("sucursales: editar", (await texto()).includes("618 000 1111"));
 
 // ---------------------------------------------------------------- leads
-await goto(`${BASE}/admin-panel/leads`);
+await goto(`${BASE}/admin/leads`);
 await waitFor("tbody tr");
 check("leads: listado", (await texto()).includes("Ana Torres"));
 await fill("tbody tr select", "atendido");
@@ -307,14 +307,14 @@ check(
   ),
 );
 
-await goto(`${BASE}/admin-panel/leads/lead-002/editar`);
+await goto(`${BASE}/admin/leads/lead-002/editar`);
 await waitFor('select[name="status"]');
 check("leads: detalle solo lectura", (await texto()).includes("Consulta por mayoreo"));
 await fill('select[name="status"]', "pendiente");
 await submit();
-await waitForPath("/admin-panel/leads");
+await waitForPath("/admin/leads");
 await waitFor("tbody tr");
-check("leads: editar status desde detalle", (await urlActual()) === "/admin-panel/leads", await urlActual());
+check("leads: editar status desde detalle", (await urlActual()) === "/admin/leads", await urlActual());
 check(
   "leads: status aplicado",
   await evaluate(
@@ -323,7 +323,7 @@ check(
 );
 
 // ---------------------------------------------------------------- eliminar
-await goto(`${BASE}/admin-panel/productos`);
+await goto(`${BASE}/admin/productos`);
 await waitFor("tbody tr");
 await evaluate(`(() => {
   window.confirm = () => true;
@@ -334,18 +334,18 @@ await sleep(600);
 check("productos: eliminar", !(await texto()).includes("Blend Nocturno"));
 
 // ---------------------------------------------------------------- logout
-await goto(`${BASE}/admin-panel/dashboard`);
-await waitForPath("/admin-panel/dashboard");
+await goto(`${BASE}/admin/dashboard`);
+await waitForPath("/admin/dashboard");
 await waitFor("button");
 await clickText("Cerrar sesión");
-await waitForPath("/admin-panel/login");
+await waitForPath("/admin/login");
 await waitFor('input[name="usuario"]');
-check("logout vuelve al login", (await urlActual()) === "/admin-panel/login", await urlActual());
+check("logout vuelve al login", (await urlActual()) === "/admin/login", await urlActual());
 
 // ---------------------------------------------------------------- usuario temporal
 await clickText("invitado");
 await submit();
-await waitForPath("/admin-panel/dashboard");
+await waitForPath("/admin/dashboard");
 await waitFor(".recharts-surface");
 const conTemporal = await texto();
 check("cuenta temporal entra al dashboard", conTemporal.toLowerCase().includes("ventas sep"));
@@ -359,9 +359,9 @@ check(
 );
 
 await clickText("Cerrar sesi");
-await waitForPath("/admin-panel/login");
+await waitForPath("/admin/login");
 await waitFor('input[name="usuario"]');
-check("cuenta temporal puede cerrar sesion", (await urlActual()) === "/admin-panel/login");
+check("cuenta temporal puede cerrar sesion", (await urlActual()) === "/admin/login");
 
 // ---------------------------------------------------------------- errores
 check("sin errores de consola", errores.length === 0, errores.join(" | ").slice(0, 500));

@@ -5,6 +5,8 @@ type CampoProps = {
   label: string;
   name: string;
   hint?: string;
+  step?:string|number;
+  type?:string;
 };
 
 export function CampoTexto({
@@ -14,12 +16,15 @@ export function CampoTexto({
   type = "text",
   value,
   onChange,
+  step,
+  maxLength,
   required,
   min,
   placeholder,
 }: CampoProps & {
-  type?: "text" | "number" | "email" | "url";
+  type?: "text" | "number" | "email" | "url" | "time"| "tel";
   value: string;
+  maxLength?:number,
   onChange: (value: string) => void;
   required?: boolean;
   min?: string | number;
@@ -36,6 +41,7 @@ export function CampoTexto({
         min={min}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
+        step={step}
         className={base}
       />
       {hint ? <span className="mt-1 block text-xs text-gris-pizarra">{hint}</span> : null}

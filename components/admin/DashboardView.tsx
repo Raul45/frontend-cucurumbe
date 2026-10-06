@@ -93,7 +93,7 @@ export default function DashboardView() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-azabache">Leads recientes</h2>
             <Link
-              href="/admin-panel/leads"
+              href="/admin/leads"
               className="text-xs font-medium text-latte transition hover:text-azabache"
             >
               Ver todos
