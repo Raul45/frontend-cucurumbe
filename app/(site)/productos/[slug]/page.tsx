@@ -1,63 +1,9 @@
+import { getImageUrl } from "@/lib/admin/getImage";
+import { getProduct } from "@/services/product.service";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-const MOCK_PRODUCTS: Record<
-  string,
-  {
-    slug: string;
-    name: string;
-    price: number;
-    image: string;
-    description: string;
-  }
-> = {
-  "cafe-tostado-claro": {
-    slug: "cafe-tostado-claro",
-    name: "Café Tostado Claro",
-    price: 185,
-    image: "/images.jpg",
-    description:
-      "Café con tostado claro, notas florales y cítricas, acidez brillante y cuerpo ligero.",
-  },
-  "cafe-tostado-medio": {
-    slug: "cafe-tostado-medio",
-    name: "Café Tostado Medio",
-    price: 195,
-    image: "/images1.jpg",
-    description:
-      "Balance perfecto entre acidez y dulzura, con notas a caramelo. Ideal para consumo diario.",
-  },
-  "cafe-tostado-oscuro": {
-    slug: "cafe-tostado-oscuro",
-    name: "Café Tostado Oscuro",
-    price: 205,
-    image: "/images.jpg",
-    description:
-      "Cuerpo intenso, con notas a cacao, nuez tostada y final prolongado.",
-  },
-  "cafe-molido-especial": {
-    slug: "cafe-molido-especial",
-    name: "Café Molido Especial",
-    price: 215,
-    image: "/images1.jpg",
-    description: "Mezcla especial molida lista para preparar en tu método favorito.",
-  },
-  "cafe-granos-premium": {
-    slug: "cafe-granos-premium",
-    name: "Granos Premium",
-    price: 235,
-    image: "/images.jpg",
-    description: "Granos enteros seleccionados de alta calidad para mayor frescura.",
-  },
-  "cafe-espresso-blend": {
-    slug: "cafe-espresso-blend",
-    name: "Espresso Blend",
-    price: 245,
-    image: "/images1.jpg",
-    description: "Blend diseñado para espresso con crema densa y sabor equilibrado.",
-  },
-};
+import ProductImageSlider from "@/components/ProductSlider";
 
 export default async function ProductoDetallePage({
   params,
@@ -65,7 +11,7 @@ export default async function ProductoDetallePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = MOCK_PRODUCTS[slug];
+  const product = await getProduct(slug);
 
   if (!product) {
     notFound();
@@ -90,13 +36,9 @@ export default async function ProductoDetallePage({
       </Link>
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-black/5 shadow-sm">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
+          <ProductImageSlider
+            images={product.images ?? []}
+            productName={product.name}
           />
         </div>
         <div className="flex flex-col">

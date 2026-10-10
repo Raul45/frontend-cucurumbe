@@ -14,6 +14,8 @@ const slides = [
   },
 ];
 
+const slidesImages = []; 
+
 export default function Slider() {
   const [current, setCurrent] = useState(0);
 
