@@ -66,7 +66,7 @@ export interface Branch {
   schedule?: BranchSchedule;
   services?: BranchServices;
   status?: BranchStatus;
-  images?: BranchImage[];
+  images: BranchImage[];
 }
 
 export async function getBranches(): Promise<Branch[]> {

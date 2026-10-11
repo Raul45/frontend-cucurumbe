@@ -1,26 +1,15 @@
+import { getImageUrl } from "@/lib/admin/getImage";
+import { Branch, getBranches } from "@/services/branch.service";
 import Image from "next/image";
 import Link from "next/link";
 
-const SUCURSALES = [
-  {
-    slug: "francisco-villa",
-    nombre: "Sucursal Blvd. Francisco Villa",
-    direccion: "Blvd. Francisco Villa 1014, Jardines de Durango, 34200 Durango, Dgo.",
-    telefono: "618 827 8158",
-    horario: "Abierto · Cierra a las 10 p.m.",
-    image: "/images.jpg",
-  },
-  {
-    slug: "20-noviembre",
-    nombre: "Sucursal Av. 20 de Noviembre",
-    direccion: "Av. 20 de Noviembre 1902, Nueva Vizcaya, 34270 Durango, Dgo.",
-    telefono: "618 810 0153",
-    horario: "Abierto · Cierra a las 11 p.m.",
-    image: "/images1.jpg",
-  },
-];
-
-export default function SucursalesPage() {
+export default async function SucursalesPage() {
+  let sucursales:Branch[] = [];
+  try {
+    sucursales = await getBranches();
+  } catch(e) {
+    console.log('Error en la obtencion de sucursales', e);
+  }
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <div className="mb-8">
@@ -32,16 +21,16 @@ export default function SucursalesPage() {
         </p>
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
-        {SUCURSALES.map((sucursal) => (
+        {sucursales.map((sucursal) => (
           <Link
-            key={sucursal.slug}
-            href={`/sucursales/${sucursal.slug}`}
+            key={sucursal._id}
+            href={`/sucursales/${sucursal._id}`}
             className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:shadow-md"
           >
             <div className="relative aspect-[16/9] w-full overflow-hidden">
               <Image
-                src={sucursal.image}
-                alt={sucursal.nombre}
+                src={getImageUrl(sucursal.images[0].url)}
+                alt={sucursal.name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, 50vw"
@@ -49,16 +38,18 @@ export default function SucursalesPage() {
             </div>
             <div className="flex flex-1 flex-col gap-3 p-5">
               <h2 className="text-lg font-semibold text-azabache transition group-hover:text-latte">
-                {sucursal.nombre}
+                {sucursal.name}
               </h2>
               <p className="text-sm text-gris-pizarra">
-                {sucursal.direccion}
+                {`${sucursal.address.street} ${sucursal.address.exteriorNumber}, ${sucursal.address.neighborhood} `}
               </p>
               <div className="mt-auto flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span className="text-gris-pizarra">
-                  Tel: {sucursal.telefono}
+                  Tel: {sucursal.contact?.phone}
                 </span>
-                <span className="text-latte">{sucursal.horario}</span>
+                <span className="rounded-full bg-azabache/5 px-3 py-1.5 text-xs font-medium text-azabache transition group-hover:bg-latte/10 group-hover:text-latte">
+                        Ver detalle
+                      </span>
               </div>
             </div>
           </Link>

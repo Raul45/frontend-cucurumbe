@@ -1,40 +1,9 @@
+import ProductImageSlider from "@/components/ProductSlider";
+import { getBranch } from "@/services/branch.service";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const SUCURSALES: Record<
-  string,
-  {
-    slug: string;
-    nombre: string;
-    direccion: string;
-    telefono: string;
-    horario: string;
-    image: string;
-    mapaUrl: string;
-  }
-> = {
-  "francisco-villa": {
-    slug: "francisco-villa",
-    nombre: "Sucursal Blvd. Francisco Villa",
-    direccion: "Blvd. Francisco Villa 1014, Jardines de Durango, 34200 Durango, Dgo.",
-    telefono: "618 827 8158",
-    horario: "Abierto · Cierra a las 10 p.m.",
-    image: "/images.jpg",
-    mapaUrl:
-      "https://maps.google.com/maps?q=Blvd.+Francisco+Villa+1014+Jardines+de+Durango+34200+Durango+Dgo.&t=&z=17&ie=UTF8&iwloc=&output=embed",
-  },
-  "20-noviembre": {
-    slug: "20-noviembre",
-    nombre: "Sucursal Av. 20 de Noviembre",
-    direccion: "Av. 20 de Noviembre 1902, Nueva Vizcaya, 34270 Durango, Dgo.",
-    telefono: "618 810 0153",
-    horario: "Abierto · Cierra a las 11 p.m.",
-    image: "/images1.jpg",
-    mapaUrl:
-      "https://maps.google.com/maps?q=Av.+20+de+Noviembre+1902+Nueva+Vizcaya+34270+Durango+Dgo.&t=&z=17&ie=UTF8&iwloc=&output=embed",
-  },
-};
 
 export default async function SucursalDetallePage({
   params,
@@ -42,7 +11,7 @@ export default async function SucursalDetallePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const sucursal = SUCURSALES[slug];
+  const sucursal = await getBranch(slug);
 
   if (!sucursal) {
     notFound();
@@ -67,59 +36,35 @@ export default async function SucursalDetallePage({
       </Link>
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-black/5 shadow-sm">
-          <Image
-            src={sucursal.image}
-            alt={sucursal.nombre}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
+          <ProductImageSlider
+            images={sucursal.images}
+            productName={sucursal.name}
           />
         </div>
         <div className="flex flex-col gap-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-azabache sm:text-4xl">
-              {sucursal.nombre}
+              {sucursal.name}
             </h1>
             <p className="mt-4 text-base text-gris-pizarra">
-              {sucursal.direccion}
+                {`${sucursal.address.street} ${sucursal.address.exteriorNumber}, ${sucursal.address.neighborhood} `}
             </p>
           </div>
           <div className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-2 text-sm sm:text-base">
               <p>
                 <span className="font-semibold text-azabache">Teléfono:</span>{" "}
-                {sucursal.telefono}
-              </p>
-              <p>
-                <span className="font-semibold text-azabache">Horario:</span>{" "}
-                {sucursal.horario}
+                {sucursal.contact?.phone}
               </p>
               <p>
                 <span className="font-semibold text-azabache">Dirección:</span>{" "}
-                {sucursal.direccion}
+                {`${sucursal.address.street} ${sucursal.address.exteriorNumber}, ${sucursal.address.neighborhood} `}
               </p>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-10">
-        <h2 className="mb-4 text-lg font-semibold text-azabache sm:text-xl">
-          Mapa
-        </h2>
-        <div className="overflow-hidden rounded-2xl border border-black/5 shadow-sm">
-          <iframe
-            src={sucursal.mapaUrl}
-            width="100%"
-            height="400"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title={`Mapa de ${sucursal.nombre}`}
-          />
-        </div>
-      </div>
+      
     </div>
   );
 }

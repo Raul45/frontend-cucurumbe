@@ -3,12 +3,17 @@ import Link from "next/link";
 import Slider from "../../components/Slider";
 import { getProducts, Product } from "@/services/product.service";
 import { getImageUrl } from "@/lib/admin/getImage";
+import { getSlider, pageContent, slidesContent } from "@/services/page-content.sevice";
 
 export default async function Home() {
 
   let products:Product[] = []
+  let pageContet:pageContent;
+  let slides:slidesContent[] = [];
   try {
     products = await getProducts();
+    pageContet = await getSlider();
+    slides = pageContet?.slides ?? [];  
   } catch(e) {
     console.error("Error al cargar los productos:", e);
   }
@@ -19,7 +24,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       <section className="px-4 pt-8 sm:px-6 sm:pt-12">
-        <Slider />
+        <Slider slides={slides} />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
