@@ -1,0 +1,180 @@
+import type { Lead, Producto, Sucursal, VentaCategoria, VentaMes } from "./types";
+
+export const PRODUCTOS_INICIALES: Producto[] = [
+  {
+    id: "prd-001",
+    nombre: "Café Tostado Claro",
+    categoria: "Café en grano",
+    precio: 185,
+    stock: 42,
+    imagen: "/images.jpg",
+    descripcion: "Café con tostado claro, notas florales y acidez brillante.",
+  },
+  {
+    id: "prd-002",
+    nombre: "Café Tostado Medio",
+    categoria: "Café en grano",
+    precio: 195,
+    stock: 37,
+    imagen: "/images1.jpg",
+    descripcion: "Balance perfecto entre acidez y dulzura, ideal para diario.",
+  },
+  {
+    id: "prd-003",
+    nombre: "Café Tostado Oscuro",
+    categoria: "Café en grano",
+    precio: 205,
+    stock: 8,
+    imagen: "/images.jpg",
+    descripcion: "Cuerpo intenso con notas a cacao y nuez.",
+  },
+  {
+    id: "prd-004",
+    nombre: "Café Molido Especial",
+    categoria: "Café molido",
+    precio: 215,
+    stock: 26,
+    imagen: "/images1.jpg",
+    descripcion: "Mezcla especial molida lista para preparar.",
+  },
+  {
+    id: "prd-005",
+    nombre: "Granos Premium",
+    categoria: "Café en grano",
+    precio: 235,
+    stock: 15,
+    imagen: "/images.jpg",
+    descripcion: "Granos seleccionados de alta calidad.",
+  },
+  {
+    id: "prd-006",
+    nombre: "Espresso Blend",
+    categoria: "Blend",
+    precio: 245,
+    stock: 5,
+    imagen: "/images1.jpg",
+    descripcion: "Blend pensado especialmente para espresso.",
+  },
+  {
+    id: "prd-007",
+    nombre: "Vaso Térmico 350 ml",
+    categoria: "Accesorios",
+    precio: 320,
+    stock: 19,
+    imagen: "/images1.jpg",
+    descripcion: "Vaso de acero inoxidable con tapa antiderrames.",
+  },
+  {
+    id: "prd-008",
+    nombre: "Filtro de Papel 100 uds.",
+    categoria: "Accesorios",
+    precio: 129,
+    stock: 64,
+    imagen: "/images.jpg",
+    descripcion: "Filtros de papelatore compatible con V60.",
+  },
+];
+
+export const SUCURSALES_INICIALES: Sucursal[] = [
+  {
+    id: "suc-001",
+    nombre: "Sucursal Blvd. Francisco Villa",
+    direccion: "Blvd. Francisco Villa 1014, Jardines de Durango, 34200 Durango, Dgo.",
+    telefono: "618 827 8158",
+    horario: "Lun a Sáb · 7:00 a 22:00",
+    imagen: "/images.jpg",
+  },
+  {
+    id: "suc-002",
+    nombre: "Sucursal Av. 20 de Noviembre",
+    direccion: "Av. 20 de Noviembre 1902, Nueva Vizcaya, 34270 Durango, Dgo.",
+    telefono: "618 810 0153",
+    horario: "Lun a Dom · 8:00 a 23:00",
+    imagen: "/images1.jpg",
+  },
+  {
+    id: "suc-003",
+    nombre: "Sucursal Centro Histórico",
+    direccion: "Calle del Centro 45, Centro, 34000 Durango, Dgo.",
+    telefono: "618 555 0142",
+    horario: "Mar a Dom · 9:00 a 21:00",
+    imagen: "/images.jpg",
+  },
+];
+
+export const LEADS_INICIALES: Lead[] = [
+  {
+    id: "lead-001",
+    nombre: "Ana Torres",
+    correo: "ana.torres@correo.com",
+    celular: "618 123 4567",
+    comentario: "Quiero saber si hacen envíos a otros estados.",
+    status: "pendiente",
+    fecha: "2026-09-28",
+  },
+  {
+    id: "lead-002",
+    nombre: "Luis Ramírez",
+    correo: "luis.ramirez@correo.com",
+    celular: "618 234 5678",
+    comentario: "Consulta por mayoreo de café en grano para cafeteria.",
+    status: "atendido",
+    fecha: "2026-09-25",
+  },
+  {
+    id: "lead-003",
+    nombre: "Sofía Márquez",
+    correo: "sofia.marquez@correo.com",
+    celular: "618 345 6789",
+    comentario: "Me interesa la suscripción mensual de café.",
+    status: "pendiente",
+    fecha: "2026-09-21",
+  },
+  {
+    id: "lead-004",
+    nombre: "Jorge Gutiérrez",
+    correo: "jorge.gutierrez@correo.com",
+    celular: "618 456 7890",
+    comentario: "¿Tienen Parking en la sucursal del centro?",
+    status: "atendido",
+    fecha: "2026-09-18",
+  },
+  {
+    id: "lead-005",
+    nombre: "Fernanda Ruiz",
+    correo: "fernanda.ruiz@correo.com",
+    celular: "618 567 8901",
+    comentario: "Solicita cotización de productos mixtos para tienda.",
+    status: "pendiente",
+    fecha: "2026-09-11",
+  },
+];
+
+export const VENTAS_POR_MES: VentaMes[] = [
+  { mes: "Oct", ventas: 38200, pedidos: 214 },
+  { mes: "Nov", ventas: 41650, pedidos: 236 },
+  { mes: "Dic", ventas: 52400, pedidos: 301 },
+  { mes: "Ene", ventas: 47800, pedidos: 268 },
+  { mes: "Feb", ventas: 44100, pedidos: 249 },
+  { mes: "Mar", ventas: 49300, pedidos: 277 },
+  { mes: "Abr", ventas: 55600, pedidos: 312 },
+  { mes: "May", ventas: 58900, pedidos: 328 },
+  { mes: "Jun", ventas: 61200, pedidos: 341 },
+  { mes: "Jul", ventas: 57400, pedidos: 319 },
+  { mes: "Ago", ventas: 63800, pedidos: 356 },
+  { mes: "Sep", ventas: 68400, pedidos: 382 },
+];
+
+export const VENTAS_POR_CATEGORIA: VentaCategoria[] = [
+  { categoria: "Café en grano", ventas: 142000 },
+  { categoria: "Café molido", ventas: 64000 },
+  { categoria: "Blend", ventas: 48000 },
+  { categoria: "Accesorios", ventas: 37500 },
+];
+
+export const CATEGORIAS = [
+  "Café en grano",
+  "Café molido",
+  "Blend",
+  "Accesorios",
+];
