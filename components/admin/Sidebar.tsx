@@ -11,6 +11,7 @@ import {
   LogoutIcon,
   MailIcon,
   MenuIcon,
+  SliderIcon,
   StoreIcon,
 } from "./icons";
 
@@ -35,6 +36,11 @@ const ENLACES = [
     label: "Leads",
     icon: MailIcon,
   },
+  {
+    href: "/admin/slider",
+    label: "Slider",
+    icon: SliderIcon
+  }
 ];
 
 function esActivo(pathname: string, href: string) {

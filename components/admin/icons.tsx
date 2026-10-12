@@ -141,3 +141,21 @@ export function MenuIcon({ className = "h-5 w-5" }: IconProps) {
     </svg>
   );
 }
+
+export function SliderIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h16V5H4Z" />
+      <path d="M6 7h12v7H6z" />
+      <path d="M7 16h10v1H7z" />
+      <circle cx="8" cy="9" r="1" fill="white" />
+      <path d="m7 13 2.5-2.5 2 2L14 10l3 3H7Z" fill="white" />
+    </svg>
+  );
+}

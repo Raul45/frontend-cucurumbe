@@ -13,6 +13,8 @@ export default async function Home() {
   try {
     products = await getProducts();
     pageContet = await getSlider();
+    console.log('======');
+    console.log(pageContet);
     slides = pageContet?.slides ?? [];  
   } catch(e) {
     console.error("Error al cargar los productos:", e);

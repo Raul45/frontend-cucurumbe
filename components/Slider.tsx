@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -55,52 +54,64 @@ export default function Slider({ slides }: SliderProps) {
         className="flex transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
-        {activeSlides.map((slide, index) => {
-          const content = (
-            <>
-              <Image
-                src={getImageUrl(slide.imageUrl)}
-                alt={slide.title}
-                fill
-                priority={index === 0}
-                unoptimized
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 90vw"
-              />
+        {activeSlides.map((slide, index) => (
+          <div
+            key={slide._id}
+            className="relative h-[280px] w-full shrink-0 sm:h-[420px] lg:h-[520px]"
+          >
+            {/* Imagen del banner */}
+            <Image
+              src={getImageUrl(slide.imageUrl)}
+              alt={slide.title}
+              fill
+              priority={index === 0}
+              unoptimized
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 90vw"
+            />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-azabache/70 to-azabache/10" />
+            {/* Degradado para mejorar la legibilidad */}
+            <div className="absolute inset-0 bg-gradient-to-t from-azabache/70 to-azabache/10" />
 
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
-                <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
-                  {slide.title}
-                </h2>
+            {/* Texto y botón */}
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
+              <h2 className="text-2xl font-bold tracking-tight text-white sm:text-4xl">
+                {slide.title}
+              </h2>
 
-                <p className="mt-2 max-w-xl text-sm text-white/90 sm:text-base">
-                  {slide.subtitle}
-                </p>
-              </div>
-            </>
-          );
+              <p className="mt-2 max-w-xl text-sm text-white/90 sm:text-base">
+                {slide.subtitle}
+              </p>
 
-          return (
-            <div
-              key={slide._id}
-              className="relative h-[280px] w-full shrink-0 sm:h-[420px] lg:h-[520px]"
-            >
-              {slide.productId ? (
+              {/* Mostrar el botón solo si existe un producto asociado */}
+              {slide.productId && (
                 <Link
                   href={`/productos/${slide.productId}`}
-                  className="absolute inset-0 block"
-                  aria-label={`${slide.title}: ver producto`}
+                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-latte px-5 py-3 text-sm font-semibold text-azabache shadow-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-azabache"
+                  aria-label={`Ver producto: ${slide.title}`}
                 >
-                  {content}
+                  Ver producto
+
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
                 </Link>
-              ) : (
-                content
               )}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {/* Flechas de navegación */}
@@ -118,6 +129,7 @@ export default function Slider({ slides }: SliderProps) {
               height="20"
               viewBox="0 0 24 24"
               fill="currentColor"
+              aria-hidden="true"
             >
               <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
             </svg>
@@ -135,6 +147,7 @@ export default function Slider({ slides }: SliderProps) {
               height="20"
               viewBox="0 0 24 24"
               fill="currentColor"
+              aria-hidden="true"
             >
               <path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
             </svg>

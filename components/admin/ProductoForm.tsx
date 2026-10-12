@@ -7,7 +7,6 @@ import {
   getProduct,
   updateProduct,
   type Product,
-  type ProductImage,
 } from "../../services/product.service";
 import PageHeader from "./PageHeader";
 import { CampoArea, CampoSelect, CampoTexto } from "./FormControls";

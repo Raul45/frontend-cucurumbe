@@ -141,10 +141,8 @@ export async function updateProduct(
 }
 
 export async function deleteProduct(id:string) {
-  console.log('it works');
   const response = await apiRequest<any>(`/product/${id}`,{
     method: "DELETE"
   });
-  console.log(response);
   return response;
 }

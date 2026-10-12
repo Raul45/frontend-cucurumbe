@@ -20,6 +20,7 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center gap-4 sm:gap-6">
           <div className="hidden items-center gap-6 text-sm font-medium sm:flex">
+  
             <Link
               href="/productos"
               className="text-gray-300 transition hover:text-white"
