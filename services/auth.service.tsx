@@ -1,4 +1,14 @@
 import { apiRequest } from "./api";
+
+export interface CreateUser{
+  name: string
+  firstLastName: string
+  secondLastName: string
+  email: string,
+  password: string
+  role: "USER"
+}
+
 export interface MessageApi {
   message: string;
 }
@@ -35,4 +45,13 @@ export async function getCurrentUser(): Promise<CurrentUser> {
 // LOGOUT
 export async function logout(): Promise<MessageApi> {
   return apiRequest('/logout');
+}
+
+export async function createUser(credentials: CreateUser): Promise<object> {
+  credentials.role = "USER";
+  return apiRequest('/users/singup', {
+    method: "POST",
+    credentials: 'include',
+    body: JSON.stringify(credentials)
+  });
 }

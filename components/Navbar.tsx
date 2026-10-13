@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import CartButton from "./site/CartButton";
+import UserMenu from "./site/UserMenu";
 
 export default function Navbar() {
   return (
@@ -40,21 +42,8 @@ export default function Navbar() {
               Contacto
             </Link>
           </div>
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white transition hover:bg-white/10"
-            aria-label="Icono de usuario"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5Zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3Zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5Zm0 2c2.52 0 6.26 1.12 7.42 2H4.58c1.16-.88 4.9-2 7.42-2Z" />
-            </svg>
-          </button>
+          <CartButton />
+          <UserMenu />
           <details className="relative sm:hidden">
             <summary className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-white/20 text-white transition hover:bg-white/10">
               <svg

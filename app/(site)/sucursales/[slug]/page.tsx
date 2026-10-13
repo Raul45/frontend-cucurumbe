@@ -1,4 +1,5 @@
 import ProductImageSlider from "@/components/ProductSlider";
+import GoogleMap from "@/lib/admin/GoogleMaps";
 import { getBranch } from "@/services/branch.service";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,7 +65,20 @@ export default async function SucursalDetallePage({
           </div>
         </div>
       </div>
-      
+
+      {sucursal.location?.mapaUrl ? (
+        <section className="mt-8">
+          <h2 className="mb-3 text-lg font-semibold text-azabache">
+            Ubicación
+          </h2>
+          <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
+            <GoogleMap
+            embedUrl={sucursal.location?.mapaUrl}
+            title="Sucursal Cucurumbe"
+          />
+              </div>
+        </section>
+      ) : null}
     </div>
   );
 }

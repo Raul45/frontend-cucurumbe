@@ -19,8 +19,7 @@ export interface BranchAddress {
 }
 
 export interface BranchLocation {
-  type?: string;
-  coordinates: number[];
+  mapaUrl:string;
 }
 
 export interface BranchContact {
@@ -145,8 +144,6 @@ export async function updateBranch(
     images: File[]
   }
 ) {
-    console.log('=========Update Branch');
-
   const formData = new FormData();
   formData.append("name",data.name);
   formData.append("code",data.code);

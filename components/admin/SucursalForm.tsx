@@ -121,8 +121,8 @@ export default function SucursalForm({ id }: Props) {
   const [references, setReferences] = useState("");
 
   // Ubicación
-  const [longitude, setLongitude] = useState("");
-  const [latitude, setLatitude] = useState("");
+  const [mapaUrl, setMapaUrl] = useState("");
+
 
   // Contacto
   const [phone, setPhone] = useState("");
@@ -195,17 +195,11 @@ export default function SucursalForm({ id }: Props) {
           data.address?.references ?? "",
         );
 
-        setLongitude(
+      setMapaUrl(
           String(
-            data.location?.coordinates?.[0] ?? "",
-          ),
-        );
-
-        setLatitude(
-          String(
-            data.location?.coordinates?.[1] ?? "",
-          ),
-        );
+            data.location?.mapaUrl ?? ""
+          )
+        )
 
         setPhone(data.contact?.phone ?? "");
         setEmail(data.contact?.email ?? "");
@@ -236,8 +230,8 @@ export default function SucursalForm({ id }: Props) {
           [...(data.images ?? [])].sort(
             (a,b) => a.order - b.order
           )
-        )
-      } catch (error) {
+        ) }
+       catch (error) {
         setError(
           error instanceof Error
             ? error.message
@@ -319,28 +313,18 @@ export default function SucursalForm({ id }: Props) {
       return;
     }
 
+    if(!mapaUrl.trim()) {
+        setError(
+            "El mapaUrl postal es obligatorio.",
+          );
+          return;
+    }
+
     if (
       id === NUEVO_ID &&
       newImages.length === 0
       ) {
       setError("Debes seleccionar al menos una imagen.");
-      return;
-    }
-
-    const longitudeNum = Number(longitude);
-    const latitudeNum = Number(latitude);
-
-    if (!Number.isFinite(longitudeNum)) {
-      setError(
-        "La longitud debe ser un número válido.",
-      );
-      return;
-    }
-
-    if (!Number.isFinite(latitudeNum)) {
-      setError(
-        "La latitud debe ser un número válido.",
-      );
       return;
     }
 
@@ -378,11 +362,7 @@ export default function SucursalForm({ id }: Props) {
           },
 
           location: {
-            type: "Point",
-            coordinates: [
-              longitudeNum,
-              latitudeNum,
-            ],
+            mapaUrl: mapaUrl.trim(),
           },
 
           contact: {
@@ -428,11 +408,7 @@ export default function SucursalForm({ id }: Props) {
               references.trim(),
           },
           location: {
-            type: "Point",
-            coordinates: [
-              longitudeNum,
-              latitudeNum,
-            ],
+            mapaUrl: mapaUrl.trim(),
           },
           contact: {
             phone: phone.trim(),
@@ -652,30 +628,18 @@ export default function SucursalForm({ id }: Props) {
         {/* Ubicación */}
         <SeccionColapsable titulo="Ubicación">
           <p className="mb-3 text-xs text-gris-pizarra">
-            Coordenadas geográficas de la sucursal.
+            URL google de la Ubicación
           </p>
 
           <div className="grid gap-4 sm:grid-cols-2">
+          
             <CampoTexto
-              label="Longitud"
-              name="longitude"
-              type="number"
-              step="any"
-              value={longitude}
-              onChange={setLongitude}
+              label="URL"
+              name="mapaUrl"
+              value={mapaUrl}
+              onChange={setMapaUrl}
               required
-              placeholder="-104.669"
-            />
-
-            <CampoTexto
-              label="Latitud"
-              name="latitude"
-              type="number"
-              step="any"
-              value={latitude}
-              onChange={setLatitude}
-              required
-              placeholder="24.0277"
+              placeholder="https://share.google/c9qAWiDp5Qnhs96OF"
             />
           </div>
         </SeccionColapsable>

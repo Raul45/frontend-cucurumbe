@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductImageSlider from "@/components/ProductSlider";
+import AddToCartButton from "@/components/site/AddToCartButton";
 
 export default async function ProductoDetallePage({
   params,
@@ -42,16 +43,60 @@ export default async function ProductoDetallePage({
           />
         </div>
         <div className="flex flex-col">
-          <h1 className="text-2xl font-bold tracking-tight text-azabache sm:text-4xl">
-            {product.name}
-          </h1>
-          <p className="mt-4 text-base text-gris-pizarra">
-            {product.description}
-          </p>
-          <div className="mt-6 flex items-center justify-between rounded-2xl border border-black/5 bg-white p-5 shadow-sm">
-            <span className="text-2xl font-bold text-latte">
+          <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+            {product.brand ? (
+              <p className="text-xs font-medium uppercase tracking-wide text-gris-pizarra">
+                {product.brand}
+              </p>
+            ) : null}
+
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-azabache sm:text-4xl">
+              {product.name}
+            </h1>
+
+            <p className="mt-4 text-base text-gris-pizarra">
+              {product.description}
+            </p>
+
+            <span className="mt-6 block text-2xl font-bold text-latte">
               ${product.price.toLocaleString("es-MX")} MXN
             </span>
+
+            <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-3 border-t border-black/5 pt-5 text-sm">
+              {product.category ? (
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-gris-pizarra">
+                    Categoría
+                  </dt>
+                  <dd className="mt-0.5 font-medium text-azabache">
+                    {product.category}
+                  </dd>
+                </div>
+              ) : null}
+
+              <div>
+                <dt className="text-xs uppercase tracking-wide text-gris-pizarra">
+                  Disponibilidad
+                </dt>
+                <dd className="mt-0.5">
+                  {product.inventary?.disponible ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                      Disponible
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-600">
+                      <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                      Agotado
+                    </span>
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <AddToCartButton productId={product._id} />
             <a
               href="https://www.mercadopago.com.mx/"
               target="_blank"

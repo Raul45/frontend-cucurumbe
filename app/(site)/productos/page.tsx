@@ -2,6 +2,7 @@ import { getProducts, Product } from "@/services/product.service";
 import Image from "next/image";
 import Link from "next/link";
 import ProductImageSlider from "@/components/ProductSlider";
+import AddToCartButton from "@/components/site/AddToCartButton";
 import { getImageUrl } from "@/lib/admin/getImage";
 
 export default async function ProductosPage() {

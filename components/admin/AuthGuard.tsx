@@ -17,8 +17,11 @@ export default function AuthGuard({
     async function checkSession() {
       try {
         const data = await getCurrentUser();
-        console.log(data);
-        setAutenticado(true);
+        if(data.role === "ADMIN") {
+          setAutenticado(true);
+        } else {
+          throw new Error('Rol equivocado')
+        }
       } catch {
         console.log('no cookie');
         setAutenticado(false);
